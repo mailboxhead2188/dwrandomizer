@@ -14,7 +14,7 @@ static void print_usage(const char *command, char *default_flags)
 {
     size_t i;
 
-    printf("Usage %s <rom_file> [flags [seed [sprite]]] <output_dir>\n", command);
+    printf("Usage %s <rom_file> [flags [seed [sprite]]] [output stats dir] <output_dir>\n", command);
     printf("\n");
     printf("A randomizer for Dragon Warrior for NES\n");
     printf("\n");
@@ -59,6 +59,7 @@ static void print_usage(const char *command, char *default_flags)
             printf("%s", dwr_sprite_names[i]);
         }
     }
+    printf("The output stats directory contains files pertaining to the finalized stats of all the randomized items and locations");
     printf("\n");
 }
 
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
     const char *sprite;
     char *flags;
     char default_flags[] = DEFAULT_FLAGS;
-    char *input_file, *output_dir;
+    char *input_file, *output_dir, *output_stats_dir;
 
     printf("DWRandomizer version %s\n", VERSION);
     if (argc < 3) {
@@ -78,16 +79,25 @@ int main(int argc, char **argv)
 
     input_file = argv[1];
     output_dir = argv[argc-1];
+
     if (argc >= 4) {
+        output_stats_dir = argv[argc-2];
+    }
+    else
+    {
+        output_stats_dir = NULL;
+    }
+    
+    if (argc >= 5) {
         flags = argv[2];
     } else {
         flags = default_flags;
     }
-    if (argc < 5 || sscanf(argv[3], "%"PRIu64, &seed) != 1) {
+    if (argc < 6 || sscanf(argv[3], "%"PRIu64, &seed) != 1) {
         srand(time(NULL));
         seed = ((uint64_t)rand() << 32) | ((uint64_t)rand() & 0xffffffffL);
     }
-    if (argc > 5) {
+    if (argc > 6) {
         sprite = argv[4];
     } else {
         sprite = "Random";
@@ -95,7 +105,7 @@ int main(int argc, char **argv)
 
     printf("Randomizing using seed: %"PRIu64" with flags %s\n", seed, flags);
 
-    dwr_randomize(input_file, seed, flags, sprite, output_dir);
+    dwr_randomize(input_file, seed, flags, sprite, output_dir, output_stats_dir);
 
     return 0;
 }

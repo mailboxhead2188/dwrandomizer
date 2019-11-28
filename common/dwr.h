@@ -143,7 +143,7 @@ BOOL dwr_init(dw_rom *rom, const char *input_file, char *flags);
  *      options which don't affect gameplay.
  */
 uint64_t dwr_randomize(const char* input_file, uint64_t seed, char *flags,
-        const char *sprite_name, const char* output_dir);
+        const char *sprite_name, const char* output_dir, const char* output_stats_file);
 
 #ifdef __cplusplus
 }
